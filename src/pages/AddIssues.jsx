@@ -1,8 +1,18 @@
 import React, { useState, useEffect } from "react";
+import { useAuth } from "../contexts/AuthContext";
+import { db } from "../Firebase/firebase.config";
+import { collection, addDoc } from "firebase/firestore";
+import { useNavigate } from "react-router";
+import toast from "react-hot-toast";
 
 const AddIssues = () => {
-  // simulate a logged-in user (replace with your auth state)
-  const [user, setUser] = useState({ email: "user@example.com" });
+  const { user } = useAuth();
+  const navigate = useNavigate();
+  const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    document.title = 'Add New Issue | EcoFine';
+  }, []);
 
   const [issue, setIssue] = useState({
     title: "",
@@ -12,11 +22,20 @@ const AddIssues = () => {
     image: "",
     amount: "",
     status: "ongoing",
-    date: new Date(),
-    email: user.email,
+    date: new Date().toISOString().split('T')[0],
+    email: user?.email || "",
   });
 
-  const categories = ["Pollution", "Waste Management", "Tree Plantation", "Water Issues"];
+  const categories = [
+    'Garbage',
+    'Illegal Construction',
+    'Broken Public Property',
+    'Road Damage',
+    'Water Issues',
+    'Waste Management',
+    'Tree Plantation',
+    'Infrastructure'
+  ];
 
   // handle change
   const handleChange = (e) => {
@@ -24,21 +43,52 @@ const AddIssues = () => {
     setIssue({ ...issue, [name]: value });
   };
 
-  // handle image upload (if using file input)
-  const handleImageChange = (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      setIssue({ ...issue, image: URL.createObjectURL(file) });
-    }
-  };
-
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
-    console.log("New Issue Submitted:", issue);
+    if (!user) {
+      toast.error('Please login to add an issue');
+      navigate('/login');
+      return;
+    }
 
-    // TODO: Send data to backend or Firebase
-    // fetch('/api/issues', { method: 'POST', body: JSON.stringify(issue) })
+    // Validation
+    if (!issue.title || !issue.category || !issue.location || !issue.description || !issue.amount) {
+      toast.error('Please fill in all required fields');
+      return;
+    }
+
+    setLoading(true);
+    try {
+      await addDoc(collection(db, 'issues'), {
+        ...issue,
+        amount: parseFloat(issue.amount),
+        email: user.email,
+        userId: user.uid,
+        createdAt: new Date().toISOString(),
+        status: issue.status || 'ongoing'
+      });
+      toast.success('Issue added successfully!');
+      // Reset form
+      setIssue({
+        title: "",
+        category: "",
+        location: "",
+        description: "",
+        image: "",
+        amount: "",
+        status: "ongoing",
+        date: new Date().toISOString().split('T')[0],
+        email: user.email,
+      });
+      // Navigate to My Issues page
+      navigate('/my-issues');
+    } catch (error) {
+      console.error('Error adding issue:', error);
+      toast.error('Failed to add issue. Please try again.');
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -118,15 +168,17 @@ const AddIssues = () => {
             ></textarea>
           </div>
 
-          {/* Image */}
+          {/* Image URL */}
           <div>
             <label className="block font-medium text-gray-700 mb-1">
-              Image
+              Image URL
             </label>
             <input
-              type="file"
-              accept="image/*"
-              onChange={handleImageChange}
+              type="url"
+              name="image"
+              value={issue.image}
+              onChange={handleChange}
+              placeholder="Enter image URL"
               className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-green-400 outline-none"
             />
             {issue.image && (
@@ -134,6 +186,9 @@ const AddIssues = () => {
                 src={issue.image}
                 alt="Preview"
                 className="mt-3 h-32 w-32 object-cover rounded-lg border"
+                onError={(e) => {
+                  e.target.style.display = 'none';
+                }}
               />
             )}
           </div>
@@ -154,18 +209,18 @@ const AddIssues = () => {
             />
           </div>
 
-          {/* Status & Email (readonly) */}
+          {/* Date & Email (readonly) */}
           <div className="grid grid-cols-2 gap-4">
             <div>
               <label className="block font-medium text-gray-700 mb-1">
-                Status
+                Date
               </label>
               <input
-                type="text"
-                name="status"
-                value={issue.status}
-                readOnly
-                className="w-full border border-gray-300 rounded-lg px-4 py-2 bg-gray-100 text-gray-600"
+                type="date"
+                name="date"
+                value={issue.date}
+                onChange={handleChange}
+                className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-green-400 outline-none"
               />
             </div>
 
@@ -176,7 +231,7 @@ const AddIssues = () => {
               <input
                 type="email"
                 name="email"
-                value={issue.email}
+                value={user?.email || ''}
                 readOnly
                 className="w-full border border-gray-300 rounded-lg px-4 py-2 bg-gray-100 text-gray-600"
               />
@@ -186,9 +241,10 @@ const AddIssues = () => {
           {/* Submit */}
           <button
             type="submit"
-            className="w-full mt-4 bg-green-600 hover:bg-green-700 text-white font-semibold py-2 rounded-lg transition"
+            disabled={loading}
+            className="w-full mt-4 bg-green-600 hover:bg-green-700 text-white font-semibold py-2 rounded-lg transition disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            Submit Issue
+            {loading ? 'Submitting...' : 'Submit Issue'}
           </button>
         </form>
       </div>

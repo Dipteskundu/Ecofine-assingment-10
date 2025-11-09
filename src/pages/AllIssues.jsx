@@ -5,19 +5,30 @@ import { useAuth } from '../contexts/AuthContext';
 
 export default function AllIssues() {
   const [issues, setIssues] = useState([]);
+  const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
   const { user } = useAuth();
 
   useEffect(() => {
+    document.title = 'All Issues | EcoFine';
+  }, []);
+
+  useEffect(() => {
     // Fetch issues from JSON file
+    setLoading(true);
     fetch('/issues.json')
       .then(res => res.json())
       .then(data => {
         // Sort by date (newest first)
         const sorted = data.sort((a, b) => new Date(b.date) - new Date(a.date));
         setIssues(sorted);
+        setLoading(false);
       })
-      .catch(err => console.error('Error fetching issues:', err));
+      .catch(err => {
+        console.error('Error fetching issues:', err);
+        toast.error('Failed to load issues. Please try again.');
+        setLoading(false);
+      });
   }, []);
 
   const handleSeeDetails = (issue) => {
@@ -64,7 +75,12 @@ export default function AllIssues() {
           </p>
         </div>
         
-        {issues.length === 0 ? (
+        {loading ? (
+          <div className="text-center py-12">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-green-500 mx-auto"></div>
+            <p className="mt-4 text-gray-600">Loading issues...</p>
+          </div>
+        ) : issues.length === 0 ? (
           <div className="text-center py-12">
             <p className="text-gray-500 text-lg">No issues found.</p>
           </div>

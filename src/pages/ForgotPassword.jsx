@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router';
 import { useAuth } from '../contexts/AuthContext';
 import { Mail, ArrowLeft, Send } from 'lucide-react';
@@ -10,6 +10,10 @@ export default function ForgotPassword() {
   const [emailSent, setEmailSent] = useState(false);
   const { resetPassword } = useAuth();
   const navigate = useNavigate();
+
+  useEffect(() => {
+    document.title = 'Forgot Password | EcoFine';
+  }, []);
 
   const handleSubmit = async (e) => {
     e.preventDefault();

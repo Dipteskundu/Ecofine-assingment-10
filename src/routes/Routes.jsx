@@ -9,6 +9,7 @@ import IssueDetails from '../pages/IssueDetails';
 import Login from '../pages/Login';
 import Register from '../pages/Register';
 import ForgotPassword from '../pages/ForgotPassword';
+import NotFound from '../pages/NotFound';
 import ProtectedRoute from '../components/ProtectedRoute';
 
 const Routes = createBrowserRouter([
@@ -67,6 +68,10 @@ const Routes = createBrowserRouter([
                         <IssueDetails />
                     </ProtectedRoute>
                 )
+            },
+            {
+                path: '*',
+                element: <NotFound />
             }
         ]
     }

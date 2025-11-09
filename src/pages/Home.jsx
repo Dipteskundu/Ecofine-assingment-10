@@ -3,9 +3,11 @@ import { ArrowRight, ChevronLeft, ChevronRight, Trash2, Building2, Wrench, Route
 import { motion, AnimatePresence } from 'framer-motion';
 import { useNavigate } from 'react-router';
 import { useAuth } from '../contexts/AuthContext';
+import toast from 'react-hot-toast';
 
 export default function Home() {
   const [issues, setIssues] = useState([]);
+  const [loading, setLoading] = useState(true);
   const [currentSlide, setCurrentSlide] = useState(0);
   const navigate = useNavigate();
   const { user } = useAuth();
@@ -61,15 +63,30 @@ export default function Home() {
   ];
 
   useEffect(() => {
+    document.title = 'Home | EcoFine - Community Cleanup Platform';
+  }, []);
+
+  useEffect(() => {
     // Fetch issues from JSON file
+    setLoading(true);
     fetch('/issues.json')
-      .then(res => res.json())
+      .then(res => {
+        if (!res.ok) {
+          throw new Error('Failed to fetch issues');
+        }
+        return res.json();
+      })
       .then(data => {
         // Sort by date (newest first) and take latest 6
         const sorted = data.sort((a, b) => new Date(b.date) - new Date(a.date));
         setIssues(sorted.slice(0, 6));
+        setLoading(false);
       })
-      .catch(err => console.error('Error fetching issues:', err));
+      .catch(err => {
+        console.error('Error fetching issues:', err);
+        toast.error('Failed to load issues. Please try again.');
+        setLoading(false);
+      });
   }, []);
 
   // Auto-rotate banner slides
@@ -246,8 +263,18 @@ export default function Home() {
               Latest issues reported by our community
             </p>
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {issues.map((issue, index) => (
+          {loading ? (
+            <div className="text-center py-12">
+              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-green-500 mx-auto"></div>
+              <p className="mt-4 text-gray-600">Loading issues...</p>
+            </div>
+          ) : issues.length === 0 ? (
+            <div className="text-center py-12">
+              <p className="text-gray-500 text-lg">No recent issues found.</p>
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {issues.map((issue, index) => (
               <motion.div
                 key={index}
                 initial={{ opacity: 0, y: 20 }}
@@ -291,8 +318,9 @@ export default function Home() {
                   </button>
                 </div>
               </motion.div>
-            ))}
-          </div>
+              ))}
+            </div>
+          )}
         </div>
       </section>
 

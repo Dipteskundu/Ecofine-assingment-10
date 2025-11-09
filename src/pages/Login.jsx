@@ -16,6 +16,10 @@ export default function Login() {
   const from = location.state?.from?.pathname || '/';
   const fromState = location.state?.from?.state || null;
 
+  useEffect(() => {
+    document.title = 'Login | EcoFine';
+  }, []);
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 

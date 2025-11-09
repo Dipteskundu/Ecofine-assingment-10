@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router';
 import { useAuth } from '../contexts/AuthContext';
 import { Mail, Lock, User, Image as ImageIcon, UserPlus } from 'lucide-react';
@@ -19,6 +19,10 @@ export default function Register() {
   const [loading, setLoading] = useState(false);
   const { register, googleLogin } = useAuth();
   const navigate = useNavigate();
+
+  useEffect(() => {
+    document.title = 'Register | EcoFine';
+  }, []);
 
   const validatePassword = (password) => {
     const errors = {
