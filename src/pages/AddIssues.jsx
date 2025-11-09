@@ -42,7 +42,7 @@ const AddIssues = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-green-50 to-green-100 flex items-center justify-center p-6">
+    <div className="min-h-screen bg-gradient-to-br from-green-50 to-green-100 flex items-center justify-center mt-30 p-6">
       <div className="w-full max-w-2xl bg-white shadow-xl rounded-2xl p-8">
         <h2 className="text-2xl font-semibold text-green-700 mb-6 text-center">
           Add New Issue
