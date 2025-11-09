@@ -25,7 +25,21 @@ export default function MyIssues() {
   }, [user]);
 
   const handleSeeDetails = (issue) => {
-    navigate('/issue-details', { state: { issue } });
+    // Check if user is logged in (should always be true in MyIssues, but check for safety)
+    if (user) {
+      // If logged in, navigate directly to issue details
+      navigate('/issue-details', { state: { issue } });
+    } else {
+      // If not logged in, redirect to login with intended destination
+      navigate('/login', { 
+        state: { 
+          from: { 
+            pathname: '/issue-details', 
+            state: { issue } 
+          } 
+        } 
+      });
+    }
   };
 
   const getCategoryColor = (category) => {

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Link, useNavigate } from 'react-router';
+import { Link, useNavigate, useLocation } from 'react-router';
 import { useAuth } from '../contexts/AuthContext';
 import { Mail, Lock, LogIn } from 'lucide-react';
 import toast from 'react-hot-toast';
@@ -10,6 +10,11 @@ export default function Login() {
   const [loading, setLoading] = useState(false);
   const { login, googleLogin } = useAuth();
   const navigate = useNavigate();
+  const location = useLocation();
+
+  // Get the intended destination from location state, or default to home
+  const from = location.state?.from?.pathname || '/';
+  const fromState = location.state?.from?.state || null;
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -23,7 +28,8 @@ export default function Login() {
     try {
       await login(email, password);
       toast.success('Login successful!');
-      navigate('/');
+      // Navigate to the intended destination (or home) with preserved state
+      navigate(from, { state: fromState, replace: true });
     } catch (error) {
       let errorMessage = 'Failed to login';
       if (error.code === 'auth/invalid-email') {
@@ -46,7 +52,8 @@ export default function Login() {
     try {
       await googleLogin();
       toast.success('Login successful with Google!');
-      navigate('/');
+      // Navigate to the intended destination (or home) with preserved state
+      navigate(from, { state: fromState, replace: true });
     } catch (error) {
       toast.error('Failed to login with Google');
     } finally {

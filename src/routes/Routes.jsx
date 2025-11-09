@@ -62,7 +62,11 @@ const Routes = createBrowserRouter([
             },
             {
                 path: '/issue-details',
-                element: <IssueDetails />
+                element: (
+                    <ProtectedRoute>
+                        <IssueDetails />
+                    </ProtectedRoute>
+                )
             }
         ]
     }

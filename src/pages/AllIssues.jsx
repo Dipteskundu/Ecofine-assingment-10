@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { ArrowRight } from 'lucide-react';
 import { useNavigate } from 'react-router';
+import { useAuth } from '../contexts/AuthContext';
 
 export default function AllIssues() {
   const [issues, setIssues] = useState([]);
   const navigate = useNavigate();
+  const { user } = useAuth();
 
   useEffect(() => {
     // Fetch issues from JSON file
@@ -19,7 +21,21 @@ export default function AllIssues() {
   }, []);
 
   const handleSeeDetails = (issue) => {
-    navigate('/issue-details', { state: { issue } });
+    // Check if user is logged in
+    if (user) {
+      // If logged in, navigate directly to issue details
+      navigate('/issue-details', { state: { issue } });
+    } else {
+      // If not logged in, redirect to login with intended destination
+      navigate('/login', { 
+        state: { 
+          from: { 
+            pathname: '/issue-details', 
+            state: { issue } 
+          } 
+        } 
+      });
+    }
   };
 
   const getCategoryColor = (category) => {

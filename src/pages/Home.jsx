@@ -2,11 +2,13 @@ import React, { useState, useEffect } from 'react';
 import { ArrowRight, ChevronLeft, ChevronRight, Trash2, Building2, Wrench, Route, Users, CheckCircle, Clock, Heart } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useNavigate } from 'react-router';
+import { useAuth } from '../contexts/AuthContext';
 
 export default function Home() {
   const [issues, setIssues] = useState([]);
   const [currentSlide, setCurrentSlide] = useState(0);
   const navigate = useNavigate();
+  const { user } = useAuth();
 
   // Banner slides data
   const bannerSlides = [
@@ -79,8 +81,21 @@ export default function Home() {
   }, []);
 
   const handleSeeDetails = (issue) => {
-    // Navigate to issue details page with issue data
-    navigate('/issue-details', { state: { issue } });
+    // Check if user is logged in
+    if (user) {
+      // If logged in, navigate directly to issue details
+      navigate('/issue-details', { state: { issue } });
+    } else {
+      // If not logged in, redirect to login with intended destination
+      navigate('/login', { 
+        state: { 
+          from: { 
+            pathname: '/issue-details', 
+            state: { issue } 
+          } 
+        } 
+      });
+    }
   };
 
   const nextSlide = () => {
