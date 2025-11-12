@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { ArrowRight } from 'lucide-react';
-import { useNavigate } from 'react-router';
-import { useAuth } from '../contexts/AuthContext';
+import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../hooks/useAuth';
+import toast from 'react-hot-toast';
 
 export default function AllIssues() {
   const [issues, setIssues] = useState([]);
@@ -14,21 +15,29 @@ export default function AllIssues() {
   }, []);
 
   useEffect(() => {
-    // Fetch issues from JSON file
-    setLoading(true);
-    fetch('/issues.json')
-      .then(res => res.json())
-      .then(data => {
-        // Sort by date (newest first)
-        const sorted = data.sort((a, b) => new Date(b.date) - new Date(a.date));
+    // Fetch issues from server API
+    const fetchIssues = async () => {
+      setLoading(true);
+      try {
+        const res = await fetch('http://localhost:3000/issues');
+        if (!res.ok) {
+          throw new Error(`Failed to fetch issues: ${res.status}`);
+        }
+        const data = await res.json();
+        // Sort by date (newest first) if date exists
+        const sorted = Array.isArray(data)
+          ? data.sort((a, b) => new Date(b?.date || 0) - new Date(a?.date || 0))
+          : [];
         setIssues(sorted);
-        setLoading(false);
-      })
-      .catch(err => {
+      } catch (err) {
         console.error('Error fetching issues:', err);
-        toast.error('Failed to load issues. Please try again.');
+        toast.error('Failed to load issues from server.');
+      } finally {
         setLoading(false);
-      });
+      }
+    };
+
+    fetchIssues();
   }, []);
 
   const handleSeeDetails = (issue) => {
@@ -88,7 +97,7 @@ export default function AllIssues() {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {issues.map((issue, index) => (
               <div
-                key={index}
+                key={issue._id || index}
                 className="bg-white rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition-shadow"
               >
                 <div className="h-48 overflow-hidden">

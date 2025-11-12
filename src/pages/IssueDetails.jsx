@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { useLocation, useNavigate } from 'react-router';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { ArrowLeft, MapPin, Calendar, User, DollarSign, Users, TrendingUp } from 'lucide-react';
-import { useAuth } from '../contexts/AuthContext';
+import { useAuth } from '../hooks/useAuth';
 import ContributionModal from '../components/ContributionModal';
 import { db } from '../Firebase/firebase.config';
 import { collection, addDoc, query, where, onSnapshot } from 'firebase/firestore';

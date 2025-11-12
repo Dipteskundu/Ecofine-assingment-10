@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { Link, useNavigate } from 'react-router';
-import { useAuth } from '../contexts/AuthContext';
+import { Link } from 'react-router-dom';
+import { useAuth } from '../hooks/useAuth';
 import { Mail, ArrowLeft, Send } from 'lucide-react';
 import toast from 'react-hot-toast';
 
@@ -9,7 +9,6 @@ export default function ForgotPassword() {
   const [loading, setLoading] = useState(false);
   const [emailSent, setEmailSent] = useState(false);
   const { resetPassword } = useAuth();
-  const navigate = useNavigate();
 
   useEffect(() => {
     document.title = 'Forgot Password | EcoFine';

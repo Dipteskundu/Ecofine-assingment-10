@@ -1,4 +1,4 @@
-import { createBrowserRouter } from 'react-router';
+import { createBrowserRouter } from 'react-router-dom';
 import MainLayout from '../MainLayout/MainLayout';
 import AddIssues from '../pages/AddIssues';
 import AllIssues from '../pages/AllIssues';

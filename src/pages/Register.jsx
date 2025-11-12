@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { Link, useNavigate } from 'react-router';
-import { useAuth } from '../contexts/AuthContext';
+import { Link, useNavigate } from 'react-router-dom';
+import { useAuth } from '../hooks/useAuth';
 import { Mail, Lock, User, Image as ImageIcon, UserPlus } from 'lucide-react';
 import toast from 'react-hot-toast';
 
@@ -82,7 +82,7 @@ export default function Register() {
       await googleLogin();
       toast.success('Registration successful with Google!');
       navigate('/');
-    } catch (error) {
+    } catch {
       toast.error('Failed to register with Google');
     } finally {
       setLoading(false);

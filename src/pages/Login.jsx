@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
-import { Link, useNavigate, useLocation } from 'react-router';
-import { useAuth } from '../contexts/AuthContext';
+import React, { useState, useEffect } from 'react';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
+import { useAuth } from '../hooks/useAuth';
 import { Mail, Lock, LogIn } from 'lucide-react';
 import toast from 'react-hot-toast';
 
@@ -58,7 +58,7 @@ export default function Login() {
       toast.success('Login successful with Google!');
       // Navigate to the intended destination (or home) with preserved state
       navigate(from, { state: fromState, replace: true });
-    } catch (error) {
+    } catch {
       toast.error('Failed to login with Google');
     } finally {
       setLoading(false);

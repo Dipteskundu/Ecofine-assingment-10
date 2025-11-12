@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { ArrowRight, ChevronLeft, ChevronRight, Trash2, Building2, Wrench, Route, Users, CheckCircle, Clock, Heart } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { useNavigate } from 'react-router';
-import { useAuth } from '../contexts/AuthContext';
+import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../hooks/useAuth';
 import toast from 'react-hot-toast';
 
 export default function Home() {
@@ -67,26 +67,28 @@ export default function Home() {
   }, []);
 
   useEffect(() => {
-    // Fetch issues from JSON file
-    setLoading(true);
-    fetch('/issues.json')
-      .then(res => {
+    // Fetch issues from server API
+    const fetchLatestIssues = async () => {
+      setLoading(true);
+      try {
+        const res = await fetch('http://localhost:3000/issues');
         if (!res.ok) {
-          throw new Error('Failed to fetch issues');
+          throw new Error(`Failed to fetch issues: ${res.status}`);
         }
-        return res.json();
-      })
-      .then(data => {
-        // Sort by date (newest first) and take latest 6
-        const sorted = data.sort((a, b) => new Date(b.date) - new Date(a.date));
+        const data = await res.json();
+        const sorted = Array.isArray(data)
+          ? data.sort((a, b) => new Date(b?.date || 0) - new Date(a?.date || 0))
+          : [];
         setIssues(sorted.slice(0, 6));
-        setLoading(false);
-      })
-      .catch(err => {
+      } catch (err) {
         console.error('Error fetching issues:', err);
-        toast.error('Failed to load issues. Please try again.');
+        toast.error('Failed to load issues from server.');
+      } finally {
         setLoading(false);
-      });
+      }
+    };
+
+    fetchLatestIssues();
   }, []);
 
   // Auto-rotate banner slides
@@ -95,7 +97,7 @@ export default function Home() {
       setCurrentSlide((prev) => (prev + 1) % bannerSlides.length);
     }, 5000);
     return () => clearInterval(interval);
-  }, []);
+  }, [bannerSlides.length]);
 
   const handleSeeDetails = (issue) => {
     // Check if user is logged in

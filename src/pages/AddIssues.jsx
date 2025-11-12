@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
-import { useAuth } from "../contexts/AuthContext";
-import { db } from "../Firebase/firebase.config";
-import { collection, addDoc } from "firebase/firestore";
+import { useAuth } from "../hooks/useAuth";
+// Posting to server instead of Firestore
 import { useNavigate } from "react-router";
 import toast from "react-hot-toast";
 
@@ -9,6 +8,9 @@ const AddIssues = () => {
   const { user } = useAuth();
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
+
+  // Removed unfinished "handelSubmit" block and local POST; using the
+  // validated handleSubmit function further below that posts to the server
 
   useEffect(() => {
     document.title = 'Add New Issue | EcoFine';
@@ -60,14 +62,28 @@ const AddIssues = () => {
 
     setLoading(true);
     try {
-      await addDoc(collection(db, 'issues'), {
+      const payload = {
         ...issue,
         amount: parseFloat(issue.amount),
         email: user.email,
         userId: user.uid,
         createdAt: new Date().toISOString(),
         status: issue.status || 'ongoing'
+      };
+
+      const res = await fetch('http://localhost:3000/issues', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(payload)
       });
+
+      if (!res.ok) {
+        throw new Error(`Failed to add issue: ${res.status}`);
+      }
+
+      const created = await res.json();
       toast.success('Issue added successfully!');
       // Reset form
       setIssue({
@@ -85,7 +101,7 @@ const AddIssues = () => {
       navigate('/my-issues');
     } catch (error) {
       console.error('Error adding issue:', error);
-      toast.error('Failed to add issue. Please try again.');
+      toast.error('Failed to add issue on server.');
     } finally {
       setLoading(false);
     }

@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Menu, X, Leaf, LogIn, LogOut, User } from 'lucide-react';
-import { Link, useNavigate } from 'react-router';
-import { useAuth } from '../../contexts/AuthContext';
+import { Link, useNavigate } from 'react-router-dom';
+import { useAuth } from '../../hooks/useAuth';
 import toast from 'react-hot-toast';
 
 export default function Navbar() {
@@ -58,7 +58,7 @@ export default function Navbar() {
       toast.success('Logged out successfully');
       setIsProfileDropdownOpen(false);
       navigate('/');
-    } catch (error) {
+    } catch {
       toast.error('Failed to logout');
     }
   };
