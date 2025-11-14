@@ -177,7 +177,13 @@ export default function Home() {
                         <p className="text-xl md:text-2xl mb-8">
                           {slide.description}
                         </p>
-                        <button className="bg-green-500 hover:bg-green-600 text-white px-8 py-3 rounded-lg font-medium flex items-center space-x-2 transition-colors">
+                        <button onClick={() => {
+                          if (user) {
+                            navigate('/addIssues')
+                          } else {
+                            navigate('/register')
+                          }
+                        }} className="bg-green-500 hover:bg-green-600 text-white px-8 py-3 rounded-lg font-medium flex items-center space-x-2 transition-colors">
                           <span>Get Started</span>
                           <ArrowRight className="w-5 h-5" />
                         </button>
@@ -233,7 +239,13 @@ export default function Home() {
             {categories.map((category, index) => {
               const Icon = category.icon;
               return (
-                <Motion.div
+                <Motion.div onClick={() => {
+                  if (user) {
+                    navigate('/addIssues', { state: { category: category.name } })
+                  } else {
+                    navigate('/login', { state: { from: { pathname: '/addIssues', state: { category: category.name } } } })
+                  }
+                }}
                   key={category.name}
                   initial={{ opacity: 0, y: 20 }}
                   whileInView={{ opacity: 1, y: 0 }}
@@ -384,7 +396,13 @@ export default function Home() {
             <p className="text-xl text-gray-300 mb-8 max-w-2xl mx-auto">
               Be part of the solution! Volunteer for community cleaning drives and help make our cities cleaner and greener.
             </p>
-            <button className="bg-green-500 hover:bg-green-600 text-white px-8 py-4 rounded-lg font-medium text-lg flex items-center space-x-2 mx-auto transition-colors">
+            <button onClick={() => {
+              if (user) {
+                navigate('/addIssues')
+              } else {
+                navigate('/register')
+              }
+            }} className="bg-green-500 hover:bg-green-600 text-white px-8 py-4 rounded-lg font-medium text-lg flex items-center space-x-2 mx-auto transition-colors">
               <span>Join as Volunteer</span>
               <ArrowRight className="w-5 h-5" />
             </button>

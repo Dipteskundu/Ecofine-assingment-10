@@ -1,12 +1,13 @@
 import React, { useState, useEffect } from "react";
 import { getAuth } from "firebase/auth";
 import toast from "react-hot-toast";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { useAuth } from "../hooks/useAuth";
 
 const AddIssues = () => {
   const { user } = useAuth();
   const navigate = useNavigate();
+  const location = useLocation();
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
@@ -15,7 +16,7 @@ const AddIssues = () => {
 
   const [issue, setIssue] = useState({
     title: "",
-    category: "",
+    category: location.state?.category || "",
     location: "",
     description: "",
     image: "",
