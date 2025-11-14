@@ -1,16 +1,40 @@
-# React + Vite
+# EcoFine — Community Cleanup Platform
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+EcoFine is a community-driven web app that helps citizens report local environmental and infrastructure issues, collaborate on solutions, contribute resources, and track resolution progress transparently.
 
-Currently, two official plugins are available:
+## Features
+- Report issues with category, location, description, images, budget, and date
+- Browse all issues with search and sort controls
+- View detailed issue pages, progress, and community contributions
+- Manage your issues (Firestore live updates with JSON fallback UX)
+- See your contributions, filter, and sort by date/amount
+- Secure authentication with Email/Password and Google
+- Protected routes that preserve intended navigation after login
+- Responsive UI with light/dark theme toggle (DaisyUI + Tailwind)
+- Animated interactions and polished design (Framer Motion)
+- Toast notifications for clear user feedback
+- About page with mission, values, stats, and CTAs
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## Tech Stack
+- React- 19
+- Vite- 7
+- Tailwind CSS- 4 + DaisyUI -5
+- React Router -7
+- Firebase (Auth, Firestore)
+- Framer Motion
+- Lucide React icons
+- React Hot Toast
+- jsPDF and jsPDF-AutoTable (for potential export features)
 
-## React Compiler
+## Environment Variables
+Create a `.env` file in the project root for environment configuration.
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## Firebase Setup
+- Firebase Auth and Firestore are initialized in `src/Firebase/firebase.config.js`
+- Auth flows are wrapped by `AuthProvider` and consumed via `useAuth()`
+- Protected routes redirect unauthenticated users to `Login` and preserve the original destination
 
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+## Theming
+- Theme toggle in `Navbar` supports light/dark
+- Tailwind `dark` class toggled at the document root
+- DaisyUI theme variables applied via `data-theme`
