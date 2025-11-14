@@ -341,6 +341,110 @@ export default function Home() {
         </div>
       </section>
 
+      {/* How It Works Section */}
+      <section className="py-16 bg-white dark:bg-gray-900">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-12">
+            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-4">
+              How It Works
+            </h2>
+            <p className="text-gray-600 dark:text-gray-300 text-lg">
+              Report issues, collaborate with the community, and track resolutions
+            </p>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <Motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.4 }} className="bg-gray-50 dark:bg-gray-800 rounded-xl p-6 shadow">
+              <div className="flex items-center gap-3">
+                <Route className="w-6 h-6 text-green-600" />
+                <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100">Report</h3>
+              </div>
+              <p className="mt-3 text-gray-600 dark:text-gray-300">Submit issues with location, category, description, and photos.</p>
+              <button onClick={() => { if (user) { navigate('/addIssues') } else { navigate('/register') } }} className="mt-4 bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-lg font-medium">
+                Add an Issue
+              </button>
+            </Motion.div>
+            <Motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: 0.1, duration: 0.4 }} className="bg-gray-50 dark:bg-gray-800 rounded-xl p-6 shadow">
+              <div className="flex items-center gap-3">
+                <Users className="w-6 h-6 text-green-600" />
+                <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100">Collaborate</h3>
+              </div>
+              <p className="mt-3 text-gray-600 dark:text-gray-300">Discuss solutions, share resources, and contribute to causes.</p>
+              <button onClick={() => navigate('/all-issues')} className="mt-4 bg-white dark:bg-gray-700 border border-gray-200 dark:border-gray-600 text-gray-900 dark:text-gray-100 px-4 py-2 rounded-lg font-medium">
+                Explore Issues
+              </button>
+            </Motion.div>
+            <Motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: 0.2, duration: 0.4 }} className="bg-gray-50 dark:bg-gray-800 rounded-xl p-6 shadow">
+              <div className="flex items-center gap-3">
+                <CheckCircle className="w-6 h-6 text-green-600" />
+                <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100">Resolve</h3>
+              </div>
+              <p className="mt-3 text-gray-600 dark:text-gray-300">Track progress transparently and celebrate resolved issues.</p>
+              <button onClick={() => navigate('/about')} className="mt-4 bg-white dark:bg-gray-700 border border-gray-200 dark:border-gray-600 text-gray-900 dark:text-gray-100 px-4 py-2 rounded-lg font-medium">
+                Learn More
+              </button>
+            </Motion.div>
+          </div>
+        </div>
+      </section>
+
+      {/* FAQ Section */}
+      <section className="py-16 bg-gray-50 dark:bg-gray-900">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-12">
+            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-4">Frequently Asked Questions</h2>
+            <p className="text-gray-600 dark:text-gray-300 text-lg">Quick answers to help you get started</p>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="bg-white dark:bg-gray-800 rounded-xl p-6 shadow">
+              <details className="group">
+                <summary className="cursor-pointer text-lg font-semibold text-gray-900 dark:text-gray-100 flex items-center justify-between">
+                  How do I report an issue?
+                  <span className="ml-4 text-gray-500 group-open:rotate-90 transition"><ChevronRight className="w-5 h-5" /></span>
+                </summary>
+                <p className="mt-3 text-gray-600 dark:text-gray-300">Click Add Issues, fill in the form with details like category, location, description, and optional image, then submit.</p>
+              </details>
+              <details className="group mt-4">
+                <summary className="cursor-pointer text-lg font-semibold text-gray-900 dark:text-gray-100 flex items-center justify-between">
+                  Can I see issues without logging in?
+                  <span className="ml-4 text-gray-500 group-open:rotate-90 transition"><ChevronRight className="w-5 h-5" /></span>
+                </summary>
+                <p className="mt-3 text-gray-600 dark:text-gray-300">Yes. Browse issues in All Issues. You need to log in to contribute or add new issues.</p>
+              </details>
+              <details className="group mt-4">
+                <summary className="cursor-pointer text-lg font-semibold text-gray-900 dark:text-gray-100 flex items-center justify-between">
+                  How does dark mode work?
+                  <span className="ml-4 text-gray-500 group-open:rotate-90 transition"><ChevronRight className="w-5 h-5" /></span>
+                </summary>
+                <p className="mt-3 text-gray-600 dark:text-gray-300">Use the toggle in the navbar. Your preference is saved and applied across pages.</p>
+              </details>
+            </div>
+            <div className="bg-white dark:bg-gray-800 rounded-xl p-6 shadow">
+              <details className="group">
+                <summary className="cursor-pointer text-lg font-semibold text-gray-900 dark:text-gray-100 flex items-center justify-between">
+                  How do contributions work?
+                  <span className="ml-4 text-gray-500 group-open:rotate-90 transition"><ChevronRight className="w-5 h-5" /></span>
+                </summary>
+                <p className="mt-3 text-gray-600 dark:text-gray-300">Open an issue detail page and use the contribute action. Your contributions appear in My Contribution.</p>
+              </details>
+              <details className="group mt-4">
+                <summary className="cursor-pointer text-lg font-semibold text-gray-900 dark:text-gray-100 flex items-center justify-between">
+                  Is my data secure?
+                  <span className="ml-4 text-gray-500 group-open:rotate-90 transition"><ChevronRight className="w-5 h-5" /></span>
+                </summary>
+                <p className="mt-3 text-gray-600 dark:text-gray-300">Authentication uses Firebase. Protected routes enforce access and preserve your intended navigation.</p>
+              </details>
+              <details className="group mt-4">
+                <summary className="cursor-pointer text-lg font-semibold text-gray-900 dark:text-gray-100 flex items-center justify-between">
+                  How can I help?
+                  <span className="ml-4 text-gray-500 group-open:rotate-90 transition"><ChevronRight className="w-5 h-5" /></span>
+                </summary>
+                <p className="mt-3 text-gray-600 dark:text-gray-300">Register, report issues, and contribute resources. Share resolved stories to inspire others.</p>
+              </details>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* Community Stats Section */}
       <section className="py-16 bg-gradient-to-r from-green-500 to-emerald-600">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
