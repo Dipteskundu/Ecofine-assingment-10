@@ -5,7 +5,7 @@ import { useAuth } from '../hooks/useAuth';
 import ContributionModal from '../components/ContributionModal';
  
 import toast from 'react-hot-toast';
-import { getAuth } from 'firebase/auth';
+import { authFetch, API_BASE } from '../utils/apiClient';
 
 export default function IssueDetails() {
   const { id } = useParams();
@@ -17,20 +17,7 @@ export default function IssueDetails() {
   const [contributions, setContributions] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  const API_BASE = import.meta.env.VITE_API_URL || 'https://server-bzhwshzg7-diptes-projects.vercel.app';
-
-  // ✅ Helper function to include Bearer token for backend calls
-  const authFetch = async (url, options = {}) => {
-    const auth = getAuth();
-    const currentUser = auth.currentUser;
-    const headers = new Headers(options.headers || {});
-    if (currentUser) {
-      const token = await currentUser.getIdToken();
-      headers.set('Authorization', `Bearer ${token}`);
-    }
-    headers.set('Content-Type', 'application/json');
-    return fetch(url, { ...options, headers });
-  };
+  
 
   // Update document title
   useEffect(() => {
@@ -43,7 +30,7 @@ export default function IssueDetails() {
     const fetchIssue = async () => {
       try {
         if (!id) return;
-        const res = await authFetch(`${API_BASE}/issues/${id}`);
+        const res = await authFetch(`/issues/${id}`);
         if (!res.ok) throw new Error('Failed to fetch issue');
         const data = await res.json();
         if (isMounted) setIssue(data.result || data);
@@ -64,7 +51,7 @@ export default function IssueDetails() {
     const load = async () => {
       try {
         if (!id) return;
-        const res = await authFetch(`${API_BASE}/my-contribution`);
+        const res = await authFetch(`/my-contribution`, {}, true);
         if (!res.ok) {
           if (res.status === 401 || res.status === 403) {
             toast.error('Please log in again');
@@ -117,10 +104,10 @@ export default function IssueDetails() {
         date: contributionData.date || new Date().toISOString(),
       };
 
-      const res = await authFetch(`${API_BASE}/my-contribution`, {
+      const res = await authFetch(`/my-contribution`, {
         method: 'POST',
         body: JSON.stringify(payload)
-      });
+      }, true);
 
       if (!res.ok) {
         if (res.status === 401 || res.status === 403) {

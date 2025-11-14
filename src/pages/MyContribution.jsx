@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useAuth } from '../hooks/useAuth';
 import { DollarSign, Calendar, FileText, Sparkles } from 'lucide-react';
 import toast from 'react-hot-toast';
+import { authFetch } from '../utils/apiClient';
 
 export default function MyContribution() {
   const { user } = useAuth();
@@ -14,12 +15,14 @@ export default function MyContribution() {
     let active = true;
     const load = async () => {
       try {
-        fetch('http://localhost:3000/my-contribution', {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
-
+        const res = await authFetch('/my-contribution', {}, true);
+        if (!res.ok) {
+          if (res.status === 401 || res.status === 403) {
+            toast.error('Please log in');
+            return;
+          }
+          throw new Error('Failed to load contributions');
+        }
         const data = await res.json();
         const list = Array.isArray(data) ? data : (data.result || []);
         const mine = list.filter((c) => c.email === user?.email);

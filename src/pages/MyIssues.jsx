@@ -11,8 +11,6 @@ import toast from 'react-hot-toast';
 export default function MyIssues() {
   const [issues, setIssues] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [search, setSearch] = useState('');
-  const [sortBy, setSortBy] = useState('date_desc');
   const [updateModalOpen, setUpdateModalOpen] = useState(false);
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
   const [selectedIssue, setSelectedIssue] = useState(null);
@@ -242,26 +240,6 @@ export default function MyIssues() {
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-green-500 mx-auto"></div>
           <p className="mt-4 text-gray-600">Loading your issues...</p>
         </div>
-        <div className="mb-6 flex flex-col sm:flex-row gap-3 items-stretch sm:items-center justify-between">
-          <input
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            placeholder="Search my issues"
-            className="w-full sm:w-2/3 border border-gray-300 dark:border-gray-700 rounded-lg px-4 py-2 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100"
-          />
-          <select
-            value={sortBy}
-            onChange={(e) => setSortBy(e.target.value)}
-            className="w-full sm:w-1/3 border border-gray-300 dark:border-gray-700 rounded-lg px-4 py-2 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100"
-          >
-            <option value="date_desc">Sort by: Newest</option>
-            <option value="date_asc">Sort by: Oldest</option>
-            <option value="amount_desc">Amount High→Low</option>
-            <option value="amount_asc">Amount Low→High</option>
-            <option value="title_asc">Title A→Z</option>
-            <option value="title_desc">Title Z→A</option>
-          </select>
-        </div>
       </div>
     );
   }
@@ -322,24 +300,7 @@ export default function MyIssues() {
                   </tr>
                 </thead>
                 <tbody className="bg-white divide-y divide-gray-200">
-                  {issues
-                    .filter((issue) => {
-                      const q = search.trim().toLowerCase();
-                      if (!q) return true;
-                      return [issue.title, issue.category, issue.location, issue.description]
-                        .filter(Boolean)
-                        .some((v) => String(v).toLowerCase().includes(q));
-                    })
-                    .sort((a, b) => {
-                      if (sortBy === 'date_desc') return new Date(b?.date || b?.createdAt || 0) - new Date(a?.date || a?.createdAt || 0);
-                      if (sortBy === 'date_asc') return new Date(a?.date || a?.createdAt || 0) - new Date(b?.date || b?.createdAt || 0);
-                      if (sortBy === 'amount_desc') return (Number(b.amount) || 0) - (Number(a.amount) || 0);
-                      if (sortBy === 'amount_asc') return (Number(a.amount) || 0) - (Number(b.amount) || 0);
-                      if (sortBy === 'title_asc') return String(a.title || '').localeCompare(String(b.title || ''));
-                      if (sortBy === 'title_desc') return String(b.title || '').localeCompare(String(a.title || ''));
-                      return 0;
-                    })
-                    .map((issue) => (
+                  {issues.map((issue) => (
                     <tr key={issue.id} className="hover:bg-gray-50">
                       <td className="px-6 py-4">
                         <div className="flex items-center">

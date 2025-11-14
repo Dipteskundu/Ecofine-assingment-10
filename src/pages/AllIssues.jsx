@@ -3,6 +3,7 @@ import { ArrowRight } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
 import toast from 'react-hot-toast';
+import { authFetch } from '../utils/apiClient';
 
 export default function AllIssues() {
   const [issues, setIssues] = useState([]);
@@ -21,7 +22,7 @@ export default function AllIssues() {
     const fetchIssues = async () => {
       setLoading(true);
       try {
-        const res = await fetch('https://server-bzhwshzg7-diptes-projects.vercel.app/issues');
+        const res = await authFetch('/issues');
         if (!res.ok) {
           throw new Error(`Failed to fetch issues: ${res.status}`);
         }

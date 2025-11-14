@@ -4,13 +4,14 @@ import { Link, useNavigate } from 'react-router';
 import { useAuth } from '../../hooks/useAuth';
 import toast from 'react-hot-toast';
 import { getAuth, updateProfile } from 'firebase/auth';
-import { useTheme } from '../../contexts/ThemeContext';
 
 export default function Navbar() {
+  const [theme, setTheme] = useState(localStorage.getItem("theme") ||
+    "light");
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isProfileDropdownOpen, setIsProfileDropdownOpen] = useState(false);
-  const { isDark, toggleTheme } = useTheme();
+  const [isDark, setIsDark] = useState(false);
   const [isUpdateOpen, setIsUpdateOpen] = useState(false);
   const [profileName, setProfileName] = useState('');
   const [profilePhoto, setProfilePhoto] = useState('');
@@ -25,11 +26,27 @@ export default function Navbar() {
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
-  
+  useEffect(() => { 
+    const html = document.querySelector("html"); 
+    html.setAttribute("data-theme", theme); 
+    localStorage.setItem("theme", theme); 
+  }, [theme]); 
+ 
+  const handleTheme = (checked) => { 
+    setTheme(checked ? "dark" : "light"); 
+  }; 
 
   useEffect(() => {
-    // no-op: Theme is handled globally by ThemeProvider
+    const stored = localStorage.getItem('theme');
+    const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+    const initialDark = stored ? stored === 'dark' : prefersDark;
+    setIsDark(initialDark);
   }, []);
+
+  useEffect(() => {
+    document.documentElement.classList.toggle('dark', isDark);
+    localStorage.setItem('theme', isDark ? 'dark' : 'light');
+  }, [isDark]);
 
   // Close dropdown when clicking outside
   useEffect(() => {
@@ -82,7 +99,11 @@ export default function Navbar() {
         className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${isScrolled ? 'bg-white/95 dark:bg-gray-900/95 backdrop-blur-md shadow-lg' : 'bg-white dark:bg-gray-900'
           }`}
       >
-        
+        <input 
+           onChange={(e) => handleTheme(e.target.checked)} 
+           type="checkbox" 
+           defaultChecked={localStorage.getItem('theme') === "dark"} 
+           className="toggle"/> 
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-20">
             {/* Logo */}
@@ -109,7 +130,7 @@ export default function Navbar() {
             {/* Desktop Right Side - Auth Buttons */}
             <div className="hidden lg:flex items-center space-x-4">
               <button
-                onClick={toggleTheme}
+                onClick={() => setIsDark((prev) => !prev)}
                 className="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
                 aria-label="Toggle theme"
               >
@@ -220,7 +241,7 @@ export default function Navbar() {
                     </div>
                   </div>
                   <button
-                    onClick={toggleTheme}
+                    onClick={() => setIsDark((prev) => !prev)}
                     className="w-full mt-2 px-4 py-2 rounded bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-gray-100 flex items-center justify-center space-x-2"
                   >
                     {isDark ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
@@ -255,7 +276,7 @@ export default function Navbar() {
                     <span>Register</span>
                   </Link>
                   <button
-                    onClick={toggleTheme}
+                    onClick={() => setIsDark((prev) => !prev)}
                     className="w-full mt-2 px-4 py-2 rounded bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-gray-100 flex items-center justify-center space-x-2"
                   >
                     {isDark ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}

@@ -1,20 +1,25 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Outlet } from 'react-router';
 import { Toaster } from 'react-hot-toast';
 import { AuthProvider } from '../contexts/AuthProvider';
-import { ThemeProvider } from '../contexts/ThemeContext';
 import Navbar from '../components/Navbar/Navbar';
 import Footer from '../components/Footer/Footer';
 
 const MainLayout = () => {
+  useEffect(() => {
+    const stored = localStorage.getItem('theme');
+    const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+    const shouldDark = stored ? stored === 'dark' : prefersDark;
+    document.documentElement.classList.toggle('dark', shouldDark);
+  }, []);
+
   return (
-    <ThemeProvider>
-      <AuthProvider>
-        <div className="min-h-screen bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100">
-          <Navbar />
-          <Outlet />
-          <Footer></Footer>
-          <Toaster 
+    <AuthProvider>
+      <div className="min-h-screen bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100">
+        <Navbar />
+        <Outlet />
+        <Footer></Footer>
+        <Toaster 
           position="top-right"
           toastOptions={{
             duration: 3000,
@@ -35,10 +40,9 @@ const MainLayout = () => {
               },
             },
           }}
-          />
-        </div>
-      </AuthProvider>
-    </ThemeProvider>
+        />
+      </div>
+    </AuthProvider>
   );
 };
 
