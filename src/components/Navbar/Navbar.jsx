@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Menu, X, Leaf, LogIn, LogOut, User, Sun, Moon } from 'lucide-react';
-import { Link, useNavigate } from 'react-router';
+import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../hooks/useAuth';
 import toast from 'react-hot-toast';
 import { getAuth, updateProfile } from 'firebase/auth';
@@ -34,6 +34,7 @@ export default function Navbar() {
  
   const handleTheme = (checked) => { 
     setTheme(checked ? "dark" : "light"); 
+    setIsDark(checked);
   }; 
 
   useEffect(() => {
@@ -68,7 +69,8 @@ export default function Navbar() {
   // Navigation Links - Before Login
   const publicNavLinks = [
     { name: 'Home', href: '/' },
-    { name: 'Issues', href: '/all-issues' }
+    { name: 'Issues', href: '/all-issues' },
+    { name: 'About', href: '/about' }
   ];
 
   // Navigation Links - After Login
@@ -99,11 +101,7 @@ export default function Navbar() {
         className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${isScrolled ? 'bg-white/95 dark:bg-gray-900/95 backdrop-blur-md shadow-lg' : 'bg-white dark:bg-gray-900'
           }`}
       >
-        <input 
-           onChange={(e) => handleTheme(e.target.checked)} 
-           type="checkbox" 
-           defaultChecked={localStorage.getItem('theme') === "dark"} 
-           className="toggle"/> 
+
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-20">
             {/* Logo */}
@@ -129,13 +127,15 @@ export default function Navbar() {
 
             {/* Desktop Right Side - Auth Buttons */}
             <div className="hidden lg:flex items-center space-x-4">
-              <button
-                onClick={() => setIsDark((prev) => !prev)}
-                className="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
-                aria-label="Toggle theme"
-              >
+              <label className="flex items-center gap-2 p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors cursor-pointer" aria-label="Toggle theme">
+                <input 
+                  onChange={(e) => handleTheme(e.target.checked)} 
+                  type="checkbox" 
+                  defaultChecked={localStorage.getItem('theme') === "dark"} 
+                  className="toggle"
+                />
                 {isDark ? <Sun className="w-5 h-5 text-yellow-400" /> : <Moon className="w-5 h-5 text-gray-700" />}
-              </button>
+              </label>
               {user ? (
                 <div className="relative" ref={profileDropdownRef}>
                   <button
@@ -240,13 +240,16 @@ export default function Navbar() {
                       <p className="text-xs text-gray-500 dark:text-gray-300">{user.email}</p>
                     </div>
                   </div>
-                  <button
-                    onClick={() => setIsDark((prev) => !prev)}
-                    className="w-full mt-2 px-4 py-2 rounded bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-gray-100 flex items-center justify-center space-x-2"
-                  >
+                  <label className="w-full mt-2 px-4 py-2 rounded bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-gray-100 flex items-center justify-center space-x-2 cursor-pointer">
+                    <input 
+                      onChange={(e) => handleTheme(e.target.checked)} 
+                      type="checkbox" 
+                      defaultChecked={localStorage.getItem('theme') === "dark"} 
+                      className="toggle"
+                    />
                     {isDark ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
                     <span>{isDark ? 'Light Mode' : 'Dark Mode'}</span>
-                  </button>
+                  </label>
                   <button
                     onClick={() => {
                       handleLogout();
@@ -275,13 +278,16 @@ export default function Navbar() {
                     <LogIn className="w-4 h-4" />
                     <span>Register</span>
                   </Link>
-                  <button
-                    onClick={() => setIsDark((prev) => !prev)}
-                    className="w-full mt-2 px-4 py-2 rounded bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-gray-100 flex items-center justify-center space-x-2"
-                  >
+                  <label className="w-full mt-2 px-4 py-2 rounded bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-gray-100 flex items-center justify-center space-x-2 cursor-pointer">
+                    <input 
+                      onChange={(e) => handleTheme(e.target.checked)} 
+                      type="checkbox" 
+                      defaultChecked={localStorage.getItem('theme') === "dark"} 
+                      className="toggle"
+                    />
                     {isDark ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
                     <span>{isDark ? 'Light Mode' : 'Dark Mode'}</span>
-                  </button>
+                  </label>
                 </>
               )}
             </div>

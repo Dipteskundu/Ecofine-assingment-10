@@ -1,4 +1,4 @@
-import { createBrowserRouter } from 'react-router';
+import { createBrowserRouter } from 'react-router-dom';
 import MainLayout from '../MainLayout/MainLayout';
 import AddIssues from '../pages/AddIssues';
 import AllIssues from '../pages/AllIssues';
@@ -11,6 +11,7 @@ import Register from '../pages/Register';
 import ForgotPassword from '../pages/ForgotPassword';
 import NotFound from '../pages/NotFound';
 import ProtectedRoute from '../components/ProtectedRoute';
+import About from '../pages/About';
 
 const Routes = createBrowserRouter([
     {
@@ -36,6 +37,10 @@ const Routes = createBrowserRouter([
             {
                 path: '/all-issues',
                 element: <AllIssues />
+            },
+            {
+                path: '/about',
+                element: <About />
             },
             {
                 path: '/addIssues',

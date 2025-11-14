@@ -44,7 +44,7 @@ export default function IssueDetails() {
     };
     fetchIssue();
     return () => { isMounted = false; };
-  }, [id, API_BASE]);
+  }, [id]);
 
   useEffect(() => {
     let active = true;
@@ -78,7 +78,7 @@ export default function IssueDetails() {
     };
     load();
     return () => { active = false; };
-  }, [id, navigate, API_BASE]);
+  }, [id, navigate]);
 
   // ✅ Calculate total collected
   const totalCollected = contributions.reduce((sum, contribution) => sum + (Number(contribution.amount) || 0), 0);
